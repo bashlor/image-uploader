@@ -49,7 +49,9 @@ RUN apk update
 RUN apk add --no-cache libc6-compat
 RUN npm install --global pnpm \
     && SHELL=bash pnpm setup \
-    && source /root/.bashrc \
+    && source /root/.bashrc
+
+
 RUN pnpm turbo run build --filter=$APP_NAME
 RUN pnpm --filter $APP_NAME --prod deploy pruned
 
