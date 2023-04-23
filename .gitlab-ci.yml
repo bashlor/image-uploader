@@ -12,41 +12,50 @@ build_images:
     IMAGE_NAME_API: "image-uploader-api"
     IMAGE_NAME_CLIENT: "image-uploader-client"
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
   script:
+    # fetches the latest image (not failing if image is not found)
+    - docker pull $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:latest || true
+    - docker pull $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:latest || true
 
   # Build images with commit SHA
     - docker build --file ./apps/client/Dockerfile_build --target runner -t $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:$CI_COMMIT_SHORT_SHA .
     - docker build --file ./apps/api/Dockerfile_build --target runner -t $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:$CI_COMMIT_SHORT_SHA .
 
-  # Retag images latest with digest from previous images
-    - IMAGE_ID_CLIENT=$(docker images | grep $CI_REGISTRY/$CI_PROJECT_PATH\/$IMAGE_NAME_CLIENT | awk '{print $3}')
-    - IMAGE_ID_API=$(docker images | grep $CI_REGISTRY/$CI_PROJECT_PATH\/$IMAGE_NAME_API | awk '{print $3}')
-
-    # Debug
-    - echo "IMAGE_ID_CLIENT" $IMAGE_ID_CLIENT
-    - echo "IMAGE_ID_API" $IMAGE_ID_API
-
-    - echo "IMAGE_NAME_API" $IMAGE_NAME_API
-    - echo "IMAGE_NAME_CLIENT" $IMAGE_NAME_CLIENT
-
-    - echo "CI_REGISTRY_IMAGE" $CI_REGISTRY_IMAGE
-    - echo "CI_PROJECT_PATH" $CI_PROJECT_PATH
-
-    - echo "CI_COMMIT_SHORT_SHA" $CI_COMMIT_SHORT_SHA
-
-    - echo "CI_REGISTRY" $CI_REGISTRY
-    - echo "CI_REGISTRY_USER" $CI_REGISTRY_USER
-
-    - docker tag $IMAGE_ID_CLIENT $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME_CLIENT:latest
-    - docker tag $IMAGE_ID_API $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME_API:latest
-
   # Push images commit sha and latest
     - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:latest
-
     - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:$CI_COMMIT_SHORT_SHA
+
+  only:
+    - main
+    - develop
+  tags:
+    - build
+    - docker
+    - vm
+
+push_latest_images:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    #DOCKER_HOST: tcp://docker:2375
+    IMAGE_NAME_API: "image-uploader-api"
+    IMAGE_NAME_CLIENT: "image-uploader-client"
+  script:
+    # Because we have no guarantee that this job will be picked up by the same runner
+    # that built the images in the previous step, we pull it again locally
+    - docker pull $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:$CI_COMMIT_SHORT_SHA
+    - docker pull $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:$CI_COMMIT_SHORT_SHA
+
+    # Tag and push images
+    - docker tag $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:latest
+    - docker tag $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:latest
+
+    # Push images with latest tag
     - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:latest
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:latest
   only:
     - main
     - develop
