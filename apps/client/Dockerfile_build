@@ -63,7 +63,7 @@ WORKDIR /app
 # set your APP_NAME
 ENV APP_NAME=client
 
-COPY --from=builder /usr/src/app/dist/ /var/www/html/
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/apps/client/dist/ /var/www/html/
+COPY ./apps/client/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 CMD sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'

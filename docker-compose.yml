@@ -8,9 +8,9 @@ services:
         dockerfile: ./apps/client/Dockerfile
         target: runner
     environment:
-        - PORT=${PORT}
+        - PORT=3000
     expose:
-      - "${PORT}"
+      - "3000"
     env_file:
           - prod.client.env
     networks:
@@ -27,6 +27,7 @@ services:
       - prod.api.env
     networks:
       - app-network
+
 
 networks:
     app-network:
