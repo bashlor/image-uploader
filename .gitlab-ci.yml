@@ -27,11 +27,11 @@ build_images:
     - docker tag $IMAGE_ID_API $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME_API:latest
 
   # Push images commit sha and latest
-    - docker push $CI_REGISTRY_IMAGE:/$IMAGE_NAME_API:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE:/$IMAGE_NAME_API:latest
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:latest
 
-    - docker push $CI_REGISTRY_IMAGE:/$IMAGE_NAME_CLIENT:$CI_COMMIT_SHORT_SHA
-    - docker push $CI_REGISTRY_IMAGE:/$IMAGE_NAME_CLIENT:latest
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:latest
   only:
     - main
     - develop
