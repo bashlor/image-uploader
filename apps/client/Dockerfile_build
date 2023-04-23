@@ -51,8 +51,11 @@ RUN apk update
 RUN apk add --no-cache libc6-compat
 RUN npm install --global pnpm \
     && SHELL=bash pnpm setup \
-    && source /root/.bashrc \
-RUN pnpm turbo run build --filter=$APP_NAME
+    && source /root/.bashrc
+
+RUN pnpm install turbo --global
+RUN pnpm install --filter=$APP_NAME
+RUN turbo run build --filter=$APP_NAME
 
 FROM nginx:1.23.3-alpine as runner
 
