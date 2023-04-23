@@ -51,8 +51,10 @@ RUN npm install --global pnpm \
     && SHELL=bash pnpm setup \
     && source /root/.bashrc
 
-
+RUN pnpm install turbo --global
+RUN pnpm install --filter=$APP_NAME
 RUN pnpm turbo run build --filter=$APP_NAME
+
 RUN pnpm --filter $APP_NAME --prod deploy pruned
 
 # 3. Production image, copy all the files and run next
