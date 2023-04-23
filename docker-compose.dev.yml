@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  client:
+    container_name: image-uploader-client
+    build:
+        context: .
+        dockerfile: ./apps/client/Dockerfile
+        target: dev
+    ports:
+      - "8080:8080"
+    env_file:
+          - dev.client.env
+    volumes:
+      - ./:/app
+    networks:
+      - app-network
+  api:
+    container_name: image-uploader-api
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+      target: dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - dev.api.env
+    volumes:
+      - ./:/app
+    networks:
+      - app-network
+
+networks:
+    app-network:
+      name: app-network

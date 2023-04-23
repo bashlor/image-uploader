@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.0",
+    "turbo": "latest",
+    "vitest": "^0.29.8"
+  },
+  "packageManager": "pnpm@7.15.0"
+}
