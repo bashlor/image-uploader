@@ -23,10 +23,7 @@ build_images:
     - IMAGE_ID_CLIENT=$(docker images | grep $CI_REGISTRY/$CI_PROJECT_PATH\/$IMAGE_NAME_CLIENT | awk '{print $3}')
     - IMAGE_ID_API=$(docker images | grep $CI_REGISTRY/$CI_PROJECT_PATH\/$IMAGE_NAME_API | awk '{print $3}')
 
-    - docker tag $IMAGE_ID_CLIENT $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME_CLIENT:latest
-    - docker tag $IMAGE_ID_API $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME_API:latest
-
-  # Debug
+    # Debug
     - echo "IMAGE_ID_CLIENT" $IMAGE_ID_CLIENT
     - echo "IMAGE_ID_API" $IMAGE_ID_API
 
@@ -40,6 +37,9 @@ build_images:
 
     - echo "CI_REGISTRY" $CI_REGISTRY
     - echo "CI_REGISTRY_USER" $CI_REGISTRY_USER
+
+    - docker tag $IMAGE_ID_CLIENT $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME_CLIENT:latest
+    - docker tag $IMAGE_ID_API $CI_REGISTRY/$CI_PROJECT_PATH/$IMAGE_NAME_API:latest
 
   # Push images commit sha and latest
     - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:$CI_COMMIT_SHORT_SHA
