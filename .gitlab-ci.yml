@@ -1,6 +1,6 @@
 stages:
 - build
-
+- push
 
 build_images:
   stage: build
@@ -35,7 +35,7 @@ build_images:
     - vm
 
 push_latest_images:
-  stage: build
+  stage: push
   image: docker:latest
   services:
     - docker:dind
