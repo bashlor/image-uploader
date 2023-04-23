@@ -68,11 +68,11 @@ ENV NODE_ENV=production
 ENV APP_NAME=api
 
 RUN addgroup -g 1001 -S nodejs
-RUN adduser -S fastify -u 1001
+RUN adduser -S express -u 1001
 
-COPY --from=builder --chown=fastify:nodejs /app/pruned ./
+COPY --from=builder --chown=express:nodejs /app/pruned ./
 
-USER fastify
+USER express
 
 EXPOSE 3000
 
