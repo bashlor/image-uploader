@@ -64,8 +64,10 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+
 # set your APP_NAME
 ENV APP_NAME=api
+
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S express -u 1001

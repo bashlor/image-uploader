@@ -1,6 +1,7 @@
 stages:
 - build
 - push
+- deploy
 
 build_images:
   stage: build
@@ -11,6 +12,7 @@ build_images:
     #DOCKER_HOST: tcp://docker:2375
     IMAGE_NAME_API: "image-uploader-api"
     IMAGE_NAME_CLIENT: "image-uploader-client"
+    API_URL: $API_ORIGIN
   before_script:
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
   script:
@@ -19,12 +21,15 @@ build_images:
     - docker pull $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:latest || true
 
   # Build images with commit SHA
-    - docker build --file ./apps/client/Dockerfile_build --target runner -t $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:$CI_COMMIT_SHORT_SHA .
+    - docker build --build-arg API_URL=$API_URL --file ./apps/client/Dockerfile_build --target runner -t $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:$CI_COMMIT_SHORT_SHA .
     - docker build --file ./apps/api/Dockerfile_build --target runner -t $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:$CI_COMMIT_SHORT_SHA .
 
   # Push images commit sha and latest
     - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:$CI_COMMIT_SHORT_SHA
     - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:$CI_COMMIT_SHORT_SHA
+  artifacts:
+    paths:
+      - docker-compose.yml
 
   only:
     - main
@@ -65,3 +70,60 @@ push_latest_images:
     - build
     - docker
     - vm
+
+deploy:
+  stage: deploy
+  variables:
+    APP_NAME: "image-uploader"
+    #ORIGINS
+    API_URL: $API_ORIGIN
+    CLIENT_URL: $CLIENT_ORIGIN
+
+    #SERVER CONFIGURATION
+    TLS_CERT_RESOLVER: $TLS_CERT_RESOLVER
+    DEFAULT_EXPOSED_PORT: 3000
+
+    #REGISTRY
+    API_REGISTRY_IMAGE: $API_IMAGE_REGISTRY_PATH
+    CLIENT_REGISTRY_IMAGE: $CLIENT_IMAGE_REGISTRY_PATH
+
+    #S3 credentials
+    S3_KEY: $S3_KEY
+    S3_SECRET: $S3_SECRET
+    S3_BUCKET: $S3_BUCKET
+    S3_REGION: $S3_REGION
+    S3_ENDPOINT: $S3_ENDPOINT
+
+
+  before_script:
+    - mkdir -p ~/apps/$APP_NAME
+    - mv docker-compose.yml ~/apps/$APP_NAME
+    - cd ~/apps/$APP_NAME
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker compose pull
+    # S3 credentials
+    - rm -f prod.api.env
+    - echo "S3_KEY=$(echo $SECRET_DB_HOST | sed 's/./\\&/g')" > prod.api.env
+    - echo "S3_SECRET=$(echo $SECRET_DB_USER | sed 's/./\\&/g')" >> prod.api.env
+    - echo "S3_BUCKET=$(echo $SECRET_DB_PASSWORD | sed 's/./\\&/g')" >> prod.api.env
+    - echo "S3_REGION=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
+    - echo "S3_ENDPOINT=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
+    # API variables
+    - echo "ALLOWED_ORIGINS=$CLIENT_URL" >> prod.api.env
+
+  script:
+    #- docker compose up -d
+    - echo "Deploying $APP_NAME"
+  artifacts:
+    paths:
+      - docker-compose.yml
+  needs:
+    - build_images
+    - push_latest_images
+  when: manual
+  only:
+    - main
+  tags:
+    - deploy
+    - docker
+    - prod
