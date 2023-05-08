@@ -54,8 +54,7 @@ RUN npm install --global pnpm \
 RUN pnpm install turbo --global
 RUN pnpm install --filter=$APP_NAME
 RUN pnpm turbo run build --filter=$APP_NAME
-
-RUN pnpm --filter $APP_NAME --prod deploy pruned
+RUN pnpm prune --prod
 
 # 3. Production image, copy all the files and run next
 FROM node:alpine AS runner
@@ -72,15 +71,12 @@ ENV APP_NAME=api
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S express -u 1001
 
-COPY --from=builder --chown=express:nodejs /app/pruned ./
-
+COPY --from=builder --chown=express:nodejs /app .
 USER express
 
 EXPOSE 3000
 
 ENV PORT 3000
 
-CMD npm install @nestjs/cli
-CMD npm run build
+ENTRYPOINT ["node", "./apps/api/dist/main.js"]
 
-ENTRYPOINT ["npm", "run", "start:prod"]
