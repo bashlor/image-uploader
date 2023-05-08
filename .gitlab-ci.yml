@@ -112,7 +112,7 @@ deploy:
 
   script:
     - echo "Deploying $APP_NAME"
-    - docker compose up
+    - docker compose up -d
 
   needs:
     - build_images
