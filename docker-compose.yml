@@ -21,7 +21,7 @@ services:
       - "traefik.http.routers.image-uploader-api.tls.certresolver=${TLS_CERT_RESOLVER}"
   api:
     container_name: "${APP_NAME}-api"
-    image: ${API_REGISTRY_IMAGE_PATH}:latest
+    image: ${API_IMAGE_REGISTRY_PATH}:latest
     expose:
       - "${DEFAULT_EXPOSED_PORT}"
     env_file:
