@@ -107,13 +107,12 @@ deploy:
     - echo "S3_ENDPOINT=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
     # API variables
     - echo "ALLOWED_ORIGINS=$CLIENT_URL" >> prod.api.env
+    - make stop-prod
 
   script:
-    #- docker compose up -d
     - echo "Deploying $APP_NAME"
-  artifacts:
-    paths:
-      - docker-compose.yml
+    - make start-prod
+
   needs:
     - build_images
     - push_latest_images
