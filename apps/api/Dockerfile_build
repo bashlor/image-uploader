@@ -80,4 +80,7 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-ENTRYPOINT ["node", "build/app.js"]
+CMD npm install @nestjs/cli
+CMD npm run build
+
+ENTRYPOINT ["npm", "run", "start:prod"]
