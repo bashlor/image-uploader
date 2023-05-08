@@ -2,33 +2,45 @@ version: "3.9"
 
 services:
   client:
-    container_name: image-uploader-client
-    build:
-        context: .
-        dockerfile: ./apps/client/Dockerfile
-        target: runner
-    environment:
-        - PORT=3000
+    container_name: "${APP_NAME}-client"
+    image:  ${API_REGISTRY_IMAGE}
     expose:
-      - "3000"
-    env_file:
-          - prod.client.env
+      - "${DEFAULT_EXPOSED_PORT}"
+    depends_on:
+      - api
     networks:
       - app-network
+      - traefik-servicenet
+    environment:
+      - CLIENT_URL=${CLIENT_URL}
+      - TLS_CERT_RESOLVER=${TLS_CERT_RESOLVER}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.image-uploader-api.rule=Host(`${CLIENT_URL}`)"
+      - "traefik.http.routers.image-uploader-api.entrypoints=web-secure"
+      - "traefik.http.routers.image-uploader-api.tls.certresolver=${$TLS_CERT_RESOLVER}"
   api:
-    container_name: image-uploader-api
-    build:
-      context: .
-      dockerfile: ./apps/api/Dockerfile
-      target: runner
+    container_name: "${APP_NAME}-api"
+    image: ${CLIENT_REGISTRY_IMAGE}
     expose:
-      - "3000"
+      - "${DEFAULT_EXPOSED_PORT}"
     env_file:
       - prod.api.env
+    environment:
+      - API_URL=${API_URL}
+      - TLS_CERT_RESOLVER=${TLS_CERT_RESOLVER}
     networks:
       - app-network
-
+      - traefik-servicenet
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.image-uploader-api.rule=Host(`${API_URL}`)"
+      - "traefik.http.routers.image-uploader-api.entrypoints=web-secure"
+      - "traefik.http.routers.image-uploader-api.tls.certresolver=${$TLS_CERT_RESOLVER}"
 
 networks:
-    app-network:
-      name: app-network
+  traefik-servicenet:
+    external: true
+    name: traefik-servicenet
+  app-network:
+    name: app-network
