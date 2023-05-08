@@ -18,7 +18,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.image-uploader-api.rule=Host(`${CLIENT_URL}`)"
       - "traefik.http.routers.image-uploader-api.entrypoints=web-secure"
-      - "traefik.http.routers.image-uploader-api.tls.certresolver=${$TLS_CERT_RESOLVER}"
+      - "traefik.http.routers.image-uploader-api.tls.certresolver=${TLS_CERT_RESOLVER}"
   api:
     container_name: "${APP_NAME}-api"
     image: ${CLIENT_REGISTRY_IMAGE}
@@ -36,7 +36,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.image-uploader-api.rule=Host(`${API_URL}`)"
       - "traefik.http.routers.image-uploader-api.entrypoints=web-secure"
-      - "traefik.http.routers.image-uploader-api.tls.certresolver=${$TLS_CERT_RESOLVER}"
+      - "traefik.http.routers.image-uploader-api.tls.certresolver=${TLS_CERT_RESOLVER}"
 
 networks:
   traefik-servicenet:
