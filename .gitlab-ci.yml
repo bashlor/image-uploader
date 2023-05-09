@@ -109,6 +109,7 @@ deploy:
     - echo "S3_ENDPOINT=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
     # API variables
     - CLIENT_URL="https://${CLIENT_URL}"
+    - echo The api image will use and accept requests from the following URL "$CLIENT_URL"
     - echo "ALLOWED_ORIGINS=$CLIENT_URL" >> prod.api.env
     - docker compose down
 
