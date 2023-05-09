@@ -102,11 +102,11 @@ deploy:
     - docker compose pull
     # S3 credentials
     - rm -f prod.api.env
-    - echo "S3_KEY=$(echo $SECRET_DB_HOST | sed 's/./\\&/g')" > prod.api.env
-    - echo "S3_SECRET=$(echo $SECRET_DB_USER | sed 's/./\\&/g')" >> prod.api.env
-    - echo "S3_BUCKET=$(echo $SECRET_DB_PASSWORD | sed 's/./\\&/g')" >> prod.api.env
-    - echo "S3_REGION=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
-    - echo "S3_ENDPOINT=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
+    - echo "S3_KEY=$(echo $S3_KEY | sed 's/./\\&/g')" >> prod.api.env
+    - echo "S3_SECRET=$(echo $S3_SECRET | sed 's/./\\&/g')" >> prod.api.env
+    - echo "S3_BUCKET=$(echo $S3_BUCKET | sed 's/./\\&/g')" >> prod.api.env
+    - echo "S3_REGION=$(echo $S3_REGION | sed 's/./\\&/g')" >> prod.api.env
+    - echo "S3_ENDPOINT=$(echo $S3_ENDPOINT | sed 's/./\\&/g')" >> prod.api.env
     
     # API variables
     - echo The api image will use and accept requests from the following URL "$CLIENT_URL"
