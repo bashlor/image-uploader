@@ -35,9 +35,11 @@ COPY ./pnpm-workspace.yaml /app/pnpm-workspace.yaml
 FROM node:alpine AS builder
 WORKDIR /app
 
+ARG API_URL
+
 SHELL ["/bin/sh", "-c"]
 
-ARG API_URL
+
 
 # set your APP_NAME
 ENV APP_NAME=client
