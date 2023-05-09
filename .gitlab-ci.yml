@@ -12,15 +12,13 @@ build_images:
     #DOCKER_HOST: tcp://docker:2375
     IMAGE_NAME_API: "image-uploader-api"
     IMAGE_NAME_CLIENT: "image-uploader-client"
-    API_URL: $API_ORIGIN
+    API_URL: $API_URL
   before_script:
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
   script:
   # fetch the latest image (not failing if image is not found)
     - docker pull $CI_REGISTRY_IMAGE/$IMAGE_NAME_API:latest || true
     - docker pull $CI_REGISTRY_IMAGE/$IMAGE_NAME_CLIENT:latest || true
-
-    - API_URL="https://${API_URL}"
     - echo The client image will be built with the following API_URL "$API_URL"
 
 
@@ -84,6 +82,8 @@ deploy:
     TLS_CERT_RESOLVER: $TLS_CERT_RESOLVER
     DEFAULT_EXPOSED_PORT: 3000
 
+    CLIENT_URL: $CLIENT_URL
+
     #S3 credentials
     S3_KEY: $S3_KEY
     S3_SECRET: $S3_SECRET
@@ -107,8 +107,8 @@ deploy:
     - echo "S3_BUCKET=$(echo $SECRET_DB_PASSWORD | sed 's/./\\&/g')" >> prod.api.env
     - echo "S3_REGION=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
     - echo "S3_ENDPOINT=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
+    
     # API variables
-    - CLIENT_URL="https://${CLIENT_URL}"
     - echo The api image will use and accept requests from the following URL "$CLIENT_URL"
     - echo "ALLOWED_ORIGINS=$CLIENT_URL" >> prod.api.env
     - docker compose down
