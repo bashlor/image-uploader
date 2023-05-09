@@ -12,11 +12,11 @@ services:
       - app-network
       - traefik-servicenet
     environment:
-      - CLIENT_URL=${CLIENT_ORIGIN}
+      - CLIENT_ORIGIN=${CLIENT_ORIGIN}
       - TLS_CERT_RESOLVER=${TLS_CERT_RESOLVER}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.image-uploader-client.rule=Host(`${CLIENT_URL}`)"
+      - "traefik.http.routers.image-uploader-client.rule=Host(`${CLIENT_ORIGIN}`)"
       - "traefik.http.routers.image-uploader-client.entrypoints=web-secure"
       - "traefik.http.routers.image-uploader-client.tls.certresolver=${TLS_CERT_RESOLVER}"
       - "traefik.http.services.image-uploader-client.loadbalancer.server.port=${DEFAULT_EXPOSED_PORT}"
@@ -28,14 +28,14 @@ services:
     env_file:
       - prod.api.env
     environment:
-      - API_URL=${API_ORIGIN}
+      - API_ORIGIN=${API_ORIGIN}
       - TLS_CERT_RESOLVER=${TLS_CERT_RESOLVER}
     networks:
       - app-network
       - traefik-servicenet
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.image-uploader-api.rule=Host(`${API_URL}`)"
+      - "traefik.http.routers.image-uploader-api.rule=Host(`${API_ORIGIN}`)"
       - "traefik.http.routers.image-uploader-api.entrypoints=web-secure"
       - "traefik.http.routers.image-uploader-api.tls.certresolver=${TLS_CERT_RESOLVER}"
 
