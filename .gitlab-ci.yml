@@ -79,9 +79,6 @@ deploy:
   stage: deploy
   variables:
     APP_NAME: "image-uploader"
-    #ORIGINS
-    API_URL: $API_ORIGIN
-    CLIENT_URL: $CLIENT_ORIGIN
 
     #SERVER CONFIGURATION
     TLS_CERT_RESOLVER: $TLS_CERT_RESOLVER
@@ -111,6 +108,7 @@ deploy:
     - echo "S3_REGION=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
     - echo "S3_ENDPOINT=$(echo $SECRET_DB_NAME | sed 's/./\\&/g')" >> prod.api.env
     # API variables
+    - CLIENT_URL="https://${CLIENT_URL}"
     - echo "ALLOWED_ORIGINS=$CLIENT_URL" >> prod.api.env
     - docker compose down
 
