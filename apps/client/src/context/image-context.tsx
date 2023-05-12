@@ -17,10 +17,12 @@ const ImageContextProvider: React.FC<Props> = ({ children }) => {
     const [response,setResponse] = useState<unknown|null>(null)
     const [status,setStatus] = useState<UploadStatus>(UploadStatus.FileNotLoaded)
 
-
-     function uploadImage(){
+     async function uploadImage(){
 
       if(image?.file){
+
+        const controller = new AbortController();
+        setTimeout(() => controller.abort(), 8_000);
 
         const formData = new FormData();
         formData.append('file', image.file);
@@ -29,20 +31,18 @@ const ImageContextProvider: React.FC<Props> = ({ children }) => {
 
         const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/upload`)
 
-        fetch(apiUrl.href,{ method: 'POST' , body:formData}).then(response => {
-          if(!response.ok){
-            throw new Error('Something went wrong')
-          }
+        try {
+          const response = await fetch(apiUrl.href,{ method: 'POST' , body:formData , signal: controller.signal})
+          const data = await response.json()
 
-          response.json().then(data => {
-            setStatus(UploadStatus.Uploaded)
-            setResponse(data)
-          })
+          setStatus(UploadStatus.Uploaded)
+          setResponse(data)
 
-        }).catch(error => {
+        }catch (error){
+          console.log(error)
           setStatus(UploadStatus.Error)
           setResponse(error)
-        })
+        }
       }
 
     }
