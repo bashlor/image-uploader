@@ -7,6 +7,7 @@ export type ImageContextInterface = {
     image: ImageResource | null;
     response: unknown | null;
     status: UploadStatus;
+    aborted: boolean;
 }
 
 export  interface ImageResource {

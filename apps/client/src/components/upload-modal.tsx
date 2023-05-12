@@ -57,7 +57,8 @@ export const UploadModal = () => {
     <div className="modal upload-modal">
         <div className="header">
             <h3>Upload your image</h3>
-                <p>File should be Jpeg, Png...</p>
+                <p>Your image size cannot exceed 10MB.</p>
+          <p>Allowed formats : png, jpeg, gif, bmp, tiff, webp, svg.</p>
         </div>
     <div className="image-section"
                     onDrop={e => handleDrop(e)}

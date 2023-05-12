@@ -14,15 +14,13 @@ export const ImageContext = React.createContext<ImageContextInterface>({});
 
 const ImageContextProvider: React.FC<Props> = ({ children }) => {
     const [image,setImage] = useState<ImageResource | null>(null);
-    const [response,setResponse] = useState<unknown|null>(null)
+    const [response,setResponse] = useState<Response|null>(null)
     const [status,setStatus] = useState<UploadStatus>(UploadStatus.FileNotLoaded)
+    const [aborted,setAborted] = useState<boolean>(false)
 
      async function uploadImage(){
 
       if(image?.file){
-
-        const controller = new AbortController();
-        setTimeout(() => controller.abort(), 8_000);
 
         const formData = new FormData();
         formData.append('file', image.file);
@@ -32,16 +30,24 @@ const ImageContextProvider: React.FC<Props> = ({ children }) => {
         const apiUrl = new URL(`${import.meta.env.VITE_API_URL}/upload`)
 
         try {
-          const response = await fetch(apiUrl.href,{ method: 'POST' , body:formData , signal: controller.signal})
-          const data = await response.json()
+          const responseFromFetch = await fetch(apiUrl.href,{ method: 'POST' , body:formData , signal: AbortSignal.timeout(8000)})
+          const data = await responseFromFetch.json()
 
-          setStatus(UploadStatus.Uploaded)
+          if(responseFromFetch.status !== 201){
+            setStatus(UploadStatus.Error)
+            setResponse(responseFromFetch)
+            return;
+          }
+
           setResponse(data)
+          setStatus(UploadStatus.Uploaded)
 
-        }catch (error){
-          console.log(error)
+        }catch (error:any){
+          if(error.name === 'AbortError'){
+            setAborted(true)
+          }
+
           setStatus(UploadStatus.Error)
-          setResponse(error)
         }
       }
 
@@ -59,7 +65,7 @@ const ImageContextProvider: React.FC<Props> = ({ children }) => {
     }
     
     return(
-        <ImageContext.Provider value={{image,uploadImage,loadImage,clearData,response, status}}>
+        <ImageContext.Provider value={{image,uploadImage,loadImage,clearData,response, aborted, status}}>
             {children}
         </ImageContext.Provider>
     )
