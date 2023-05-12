@@ -9,7 +9,7 @@ export const UploadCompleteModal = () => {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(link).catch((err) => {
-      throw new Error(`Failed to copy link to the clipboard ${err}`,);
+      console.error(`Failed to copy link to the clipboard ${err}`);
     });
   }
 
