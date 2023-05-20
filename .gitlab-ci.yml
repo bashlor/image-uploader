@@ -102,11 +102,11 @@ deploy:
     - docker compose pull
     # S3 credentials
     - rm -f prod.api.env
-    - echo "S3_KEY=$(echo $S3_KEY | sed 's/./\\&/g')" >> prod.api.env
-    - echo "S3_SECRET=$(echo $S3_SECRET | sed 's/./\\&/g')" >> prod.api.env
-    - echo "S3_BUCKET=$(echo $S3_BUCKET | sed 's/./\\&/g')" >> prod.api.env
-    - echo "S3_REGION=$(echo $S3_REGION | sed 's/./\\&/g')" >> prod.api.env
-    - echo "S3_ENDPOINT=$(echo $S3_ENDPOINT | sed 's/./\\&/g')" >> prod.api.env
+    - echo "S3_KEY=$S3_KEY" >> prod.api.env
+    - echo "S3_SECRET=$S3_SECRET" >> prod.api.env
+    - echo "S3_BUCKET=$S3_BUCKET" >> prod.api.env
+    - echo "S3_REGION=$S3_REGION" >> prod.api.env
+    - echo "S3_ENDPOINT=$S3_ENDPOINT" >> prod.api.env
     
     # API variables
     - echo The api image will use and accept requests from the following URL "$CLIENT_URL"
