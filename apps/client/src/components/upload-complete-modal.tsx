@@ -9,7 +9,7 @@ export const UploadCompleteModal = () => {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(link).catch((err) => {
-      throw new Error(`Failed to copy link to the clipboard ${err}`,);
+      console.error(`Failed to copy link to the clipboard ${err}`);
     });
   }
 
@@ -33,7 +33,7 @@ export const UploadCompleteModal = () => {
   
             </div>
             <div className="link-section">
-                <input type="text" onFocus={handleFocus} value={link}></input>
+                <input type="text" readOnly={true} onFocus={handleFocus} value={link}></input>
             </div>
             <button onClick={copyToClipboard} className="btn link-btn">Copy Link</button>
         </div>
