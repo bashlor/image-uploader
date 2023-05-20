@@ -6,12 +6,8 @@
 
 <div align="center">
   <h3>
-    <a href="https://image-uploader-ru8q.onrender.com/">
+    <a href="https://image-uploader.bashlor.software/">
       Demo
-    </a>
-    <span> | </span>
-    <a href="https://image-uploader-bashlor-api.herokuapp.com/">
-      Solution (API Link)
     </a>
     <span> | </span>
     <a href="https://devchallenges.io/challenges/O2iGT9yBd6xZBrOcVirx">
@@ -34,7 +30,7 @@
 
 ## Overview
 
-![screenshot](https://raw.githubusercontent.com/bashlor/image-uploader-client/main/resources/presentation.png)
+![screenshot](https://raw.githubusercontent.com/bashlor/image-uploader-2/main/presentation.png?token=GHSAT0AAAAAAB6RSEOMYLOEMIGI2NL36IHIZDI5HXA)
 
 ## Purpose
 
@@ -50,7 +46,7 @@ Turborepo, Pnpm, Docker, and Gitlab-CI.
 ### Tooling / DevOps stack
 
 - [Docker](https://www.docker.com/) (Containerization)
-- [Turborepo](https://turbo.fish/) (Monorepo tooling)
+- [Turborepo](https://turbo.build/repo) (Monorepo tooling)
 - [Pnpm](https://pnpm.io/) (Better dependency manager than npm or yarn)
 - [Gitlab-CI](https://docs.gitlab.com/ee/ci/) (CI/CD)
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces/) (Object storage)
@@ -68,7 +64,7 @@ Execute these commands on a terminal :
 
 ```bash
 # Clone this repository
-$ git clone https://github.com/bashlor/image-uploader-client
+$ git clone https://github.com/bashlor/image-uploader-2.git
 ```
 Rename `example.api.env`, `example.client.env` files to  `dev.api.env` and `dev.client.env`. Fill the environment variables with your own values.
 
