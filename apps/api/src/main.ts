@@ -19,7 +19,7 @@ async function bootstrap() {
     },
     methods: ['POST'],
     credentials: true,
-    allowedHeaders: ['Content-Type'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Access-Control-Allow-Origin'],
   });
   await app.listen(port);
