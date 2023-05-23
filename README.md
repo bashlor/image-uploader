@@ -64,7 +64,7 @@ Execute these commands on a terminal :
 
 ```bash
 # Clone this repository
-$ git clone https://github.com/bashlor/image-uploader-2.git
+$ git clone https://github.com/bashlor/image-uploader
 ```
 Rename `example.api.env`, `example.client.env` files to  `dev.api.env` and `dev.client.env`. Fill the environment variables with your own values.
 
